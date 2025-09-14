@@ -34,6 +34,8 @@ kafka-ui:
   envVars:
     - name: KAFKA_CLUSTERS_0_NAME
       value: "Development Kafka"
+    - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+      value: "{{ .Release.Name }}-kafka:9092"
   service:
     type: NodePort
     nodePort: 30000
