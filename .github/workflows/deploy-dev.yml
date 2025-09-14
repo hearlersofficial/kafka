@@ -67,11 +67,11 @@ jobs:
           EXIT_CODE=$?
           set -e
 
-          # Check if the release exists and is in a pending state
+          # Check if the release exists and is in a pending state, then uninstall it
           if [ $EXIT_CODE -eq 0 ] && (echo "$STATUS_OUTPUT" | grep -q "STATUS: pending-"); then
-            echo "Helm release 'kafka-dev' is in a pending state. Rolling back to release 0 to unlock."
-            helm rollback kafka-dev 0 --namespace development --kubeconfig ./kubeconfig.yaml
-            echo "Waiting for rollback to complete..."
+            echo "Helm release 'kafka-dev' is in a pending state. Uninstalling the release to unlock."
+            helm uninstall kafka-dev --namespace development --kubeconfig ./kubeconfig.yaml
+            echo "Waiting for uninstall to complete..."
             sleep 15
           else
             echo "Helm release 'kafka-dev' is in a stable state or does not exist. Proceeding."
