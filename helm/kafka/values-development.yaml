@@ -29,9 +29,10 @@ kafka:
           - 32093
         externalIPs:
           - 34.47.88.194
-
+          - 34.47.88.194
     controller:
-      enabled: false
+      service:
+        type: ClusterIP
 
 kafka-ui:
   env:
