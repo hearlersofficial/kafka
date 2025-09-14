@@ -33,6 +33,7 @@ kafka:
     controller:
       service:
         type: ClusterIP
+        domain: "controller.kafka.local"
 
 kafka-ui:
   env:
