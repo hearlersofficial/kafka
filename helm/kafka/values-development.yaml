@@ -3,12 +3,8 @@ kafka:
     enabled: true
   broker:
     replicaCount: 2
-    persistence:
-      enabled: false
   controller:
     replicaCount: 1
-    persistence:
-      enabled: false
     livenessProbe:
       initialDelaySeconds: 120
   resources:
@@ -32,15 +28,31 @@ kafka:
           - 34.47.88.194
     controller:
       service:
-        type: ClusterIP
-        domain: "controller.kafka.local"
-
+        type: NodePort
+        nodePorts:
+          - 32094
+        externalIPs:
+          - 34.47.88.194
+  listeners:
+    client:
+      protocol: PLAINTEXT
+      sasl:
+        enabled: false
+    internal:
+      protocol: PLAINTEXT
+      name: INTERNAL
+    external:
+      protocol: PLAINTEXT
+      name: EXTERNAL
+  advertisedListeners:
+    - EXTERNAL://34.47.88.194:32092
+    - EXTERNAL://34.47.88.194:32093
 kafka-ui:
   env:
     - name: KAFKA_CLUSTERS_0_NAME
       value: "Development Kafka"
     - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-      value: "{{ .Release.Name }}:9092"
+      value: "kafka-dev-broker-headless:9092"
   service:
     type: NodePort
     port: 8080
