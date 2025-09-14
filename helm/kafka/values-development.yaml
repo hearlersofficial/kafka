@@ -2,6 +2,8 @@
 kafka:
   broker:
     replicaCount: 2
+    persistence:
+      enabled: false
   controller:
     replicaCount: 1
     persistence:
