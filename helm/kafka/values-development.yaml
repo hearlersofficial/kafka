@@ -21,13 +21,18 @@ kafka:
 
   externalAccess:
     enabled: true
-    service:
-      type: NodePort
-      nodePorts:
-        - 32092
-        - 32093
-      externalIPs:
-        - 34.47.88.194
+    broker:
+      service:
+        type: NodePort
+        nodePorts:
+          - 32092
+          - 32093
+        externalIPs:
+          - 34.47.88.194
+
+    controller:
+      enabled: false
+
 kafka-ui:
   env:
     KAFKA_CLUSTERS_0_NAME: "Development Kafka"
