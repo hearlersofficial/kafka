@@ -5,10 +5,20 @@ kafka:
   controller:
     replicaCount: 2
 
-  resources:
-    requests:
-      cpu: 250m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi
+  # Enable external access via NodePort
+  external:
+    enabled: true
+    service:
+      type: NodePort
+      nodePorts:
+        - 32092
+        - 32093
+
+  # Lower resource requests/limits for development
+  # resources:
+  #   requests:
+  #     cpu: 250m
+  #     memory: 512Mi
+  #   limits:
+  #     cpu: 500m
+  #     memory: 1Gi

@@ -1,16 +1,14 @@
-# Common values for both development and production environments
-kafka:
-  kraft:
-    enabled: true
-  zookeeper:
-    enabled: false
+# Kafka UI (https://github.com/provectus/kafka-ui)
+kafka-ui:
+  # This configuration assumes the Helm release name is 'kafka-dev'.
+  # The bootstrap server address is composed as <release-name>-kafka:9092
+  envVars:
+    - name: KAFKA_CLUSTERS_0_NAME
+      value: "Development Kafka"
+    - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+      value: "kafka-dev-kafka:9092"
 
-  # can be overridden by environment-specific values
-  controller:
-    replicaCount: 3
-  broker:
-    replicaCount: 3
-
-  persistence:
-    enabled: true
-    size: 10Gi
+  # Expose the UI via NodePort for easy access in a dev environment
+  service:
+    type: NodePort
+    nodePort: 30000

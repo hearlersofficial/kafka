@@ -25,8 +25,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-helm-
 
-      - name: Add Bitnami Helm repository
-        run: helm repo add bitnami https://charts.bitnami.com/bitnami
+      - name: Add Helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add provectus https://provectus.github.io/kafka-ui-charts
 
       - name: Update Helm dependencies
         run: helm dependency update ./helm/kafka
@@ -46,7 +48,7 @@ jobs:
           ssh ${{ secrets.DEV_SSH_USER }}@${{ secrets.DEV_SSH_HOST }} '
             if [ ! -f /usr/local/bin/k3s ]; then
               echo "k3s not found. Installing..."
-              curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644
+              curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode 644 --tls-san ${{ secrets.DEV_SSH_HOST }}
             else
               echo "k3s is already installed."
             fi
@@ -64,7 +66,9 @@ jobs:
             -f ./helm/kafka/values-development.yaml \
             --namespace development \
             --create-namespace \
-            --wait # Wait for pods to be ready before running tests
+            --wait \
+            --set "kafka.external.advertisedListeners[0]=${{ secrets.DEV_SSH_HOST }}:32092" \
+            --set "kafka.external.advertisedListeners[1]=${{ secrets.DEV_SSH_HOST }}:32093" # Wait for pods to be ready before running tests
 
       - name: Test Helm deployment
         run: |

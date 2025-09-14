@@ -9,3 +9,6 @@ dependencies:
 - name: kafka
   version: "26.11.4" # A recent version of the Bitnami chart that supports KRaft
   repository: "https://charts.bitnami.com/bitnami"
+- name: kafka-ui
+  version: "1.4.0" # A recent version of the Kafka UI chart
+  repository: "https://provectus.github.io/kafka-ui-charts"
