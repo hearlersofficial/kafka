@@ -15,7 +15,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Cache Helm charts
         uses: actions/cache@v4
@@ -59,7 +59,7 @@ jobs:
           ssh ${{ secrets.DEV_SSH_USER }}@${{ secrets.DEV_SSH_HOST }} 'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${{ secrets.DEV_SSH_HOST }}/" > kubeconfig.yaml
           chmod 600 kubeconfig.yaml
 
-      - name: Handle potential Helm lock or failure
+      - name: Handle potential Helm lock
         run: |
           # Use set +e to prevent the script from exiting if helm status fails (e.g., on first run)
           set +e
@@ -67,9 +67,9 @@ jobs:
           EXIT_CODE=$?
           set -e
 
-          # Check if the release exists and is in a pending or failed state, then uninstall it
-          if [ $EXIT_CODE -eq 0 ] && (echo "$STATUS_OUTPUT" | grep -q -E "STATUS: (pending-|failed)"); then
-            echo "Helm release 'kafka-dev' is in a pending or failed state. Uninstalling the release to apply incompatible changes."
+          # Check if the release exists and is in a pending state, then uninstall it
+          if [ $EXIT_CODE -eq 0 ] && (echo "$STATUS_OUTPUT" | grep -q "STATUS: pending-"); then
+            echo "Helm release 'kafka-dev' is in a pending state. Uninstalling the release to unlock."
             helm uninstall kafka-dev --namespace development --kubeconfig ./kubeconfig.yaml
             echo "Waiting for uninstall to complete..."
             sleep 15
@@ -85,8 +85,6 @@ jobs:
             --namespace development \
             --create-namespace \
             --wait \
-            --set "kafka.external.advertisedListeners[0]=${{ secrets.DEV_SSH_HOST }}:32092" \
-            --set "kafka.external.advertisedListeners[1]=${{ secrets.DEV_SSH_HOST }}:32093" # Wait for pods to be ready before running tests
 
       - name: Test Helm deployment
         run: |
