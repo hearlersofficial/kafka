@@ -1,5 +1,9 @@
 # Kafka UI (https://github.com/provectus/kafka-ui)
 kafka-ui:
+  # This annotation forces a rolling update when the env vars change.
+  podAnnotations:
+    checksum/config: "{{ toYaml .Values.kafka-ui.envVars | sha256sum }}"
+
   envVars:
     - name: KAFKA_CLUSTERS_0_NAME
       value: "Kafka Cluster"
