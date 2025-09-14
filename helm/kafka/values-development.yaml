@@ -37,8 +37,10 @@ kafka:
 
 kafka-ui:
   env:
-    KAFKA_CLUSTERS_0_NAME: "Development Kafka"
-    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "{{ .Release.Name }}-kafka:9092"
+    - name: KAFKA_CLUSTERS_0_NAME
+      value: "Development Kafka"
+    - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+      value: "{{ .Release.Name }}-kafka:9092"
   service:
     type: NodePort
     port: 8080
