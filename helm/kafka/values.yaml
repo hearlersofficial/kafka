@@ -1,11 +1,3 @@
-# Kafka UI (https://github.com/provectus/kafka-ui)
 kafka-ui:
-  envVars:
-    - name: KAFKA_CLUSTERS_0_NAME
-      value: "Kafka Cluster"
-    - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-      value: "{{ .Release.Name }}:9092"
-
-  # Service is ClusterIP by default, not exposed externally
   service:
     type: ClusterIP

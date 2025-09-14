@@ -1,4 +1,6 @@
 kafka:
+  kraft:
+    enabled: true
   broker:
     replicaCount: 2
     persistence:
@@ -17,37 +19,20 @@ kafka:
       cpu: 1
       memory: 2Gi
 
-  listeners:
-    client:
-      protocol: PLAINTEXT
-      port: 9092
-    external:
-      protocol: PLAINTEXT
-      port: 9093
-
-  advertisedListeners:
-    client: "{{ .Release.Name }}:9092"
-    external:
-      - 34.47.88.194:32092
-      - 34.47.88.194:32093
-
-  external:
+  externalAccess:
     enabled: true
     service:
       type: NodePort
-      ports:
-        external: 9093
       nodePorts:
-        external:
-          - 32092
-          - 32093
-
+        - 32092
+        - 32093
+      externalIPs:
+        - 34.47.88.194
 kafka-ui:
-  envVars:
-    - name: KAFKA_CLUSTERS_0_NAME
-      value: "Development Kafka"
-    - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-      value: "{{ .Release.Name }}:9092"
+  env:
+    KAFKA_CLUSTERS_0_NAME: "Development Kafka"
+    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "{{ .Release.Name }}-kafka:9092"
   service:
     type: NodePort
+    port: 8080
     nodePort: 30000
