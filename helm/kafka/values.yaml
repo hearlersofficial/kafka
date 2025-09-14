@@ -1,14 +1,11 @@
 # Kafka UI (https://github.com/provectus/kafka-ui)
 kafka-ui:
-  # This configuration assumes the Helm release name is 'kafka-dev'.
-  # The bootstrap server address is composed as <release-name>-kafka:9092
   envVars:
     - name: KAFKA_CLUSTERS_0_NAME
-      value: "Development Kafka"
+      value: "Kafka Cluster"
     - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-      value: "kafka-dev-kafka:9092"
+      value: "{{ .Release.Name }}-kafka:9092"
 
-  # Expose the UI via NodePort for easy access in a dev environment
+  # Service is ClusterIP by default, not exposed externally
   service:
-    type: NodePort
-    nodePort: 30000
+    type: ClusterIP

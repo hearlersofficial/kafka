@@ -3,7 +3,9 @@ kafka:
   broker:
     replicaCount: 2
   controller:
-    replicaCount: 2
+    replicaCount: 1
+    persistence:
+      enabled: false
 
   # Enable external access via NodePort
   external:
@@ -15,10 +17,19 @@ kafka:
         - 32093
 
   # Lower resource requests/limits for development
-  # resources:
-  #   requests:
-  #     cpu: 250m
-  #     memory: 512Mi
-  #   limits:
-  #     cpu: 500m
-  #     memory: 1Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+# Kafka UI settings for Development
+kafka-ui:
+  envVars:
+    - name: KAFKA_CLUSTERS_0_NAME
+      value: "Development Kafka"
+  service:
+    type: NodePort
+    nodePort: 30000
