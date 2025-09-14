@@ -1,0 +1,14 @@
+# Development specific values
+kafka:
+  broker:
+    replicaCount: 2
+  controller:
+    replicaCount: 2
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi

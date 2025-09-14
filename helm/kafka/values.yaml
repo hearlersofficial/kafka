@@ -1,0 +1,16 @@
+# Common values for both development and production environments
+kafka:
+  kraft:
+    enabled: true
+  zookeeper:
+    enabled: false
+
+  # can be overridden by environment-specific values
+  controller:
+    replicaCount: 3
+  broker:
+    replicaCount: 3
+
+  persistence:
+    enabled: true
+    size: 10Gi

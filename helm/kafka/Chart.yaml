@@ -1,0 +1,11 @@
+apiVersion: v2
+name: hearlers-kafka
+description: A Helm chart for deploying Kafka in KRaft mode for Hearlers project
+type: application
+version: 0.1.0
+appVersion: "3.6.1" # Kafka version
+
+dependencies:
+- name: kafka
+  version: "26.11.4" # A recent version of the Bitnami chart that supports KRaft
+  repository: "https://charts.bitnami.com/bitnami"
