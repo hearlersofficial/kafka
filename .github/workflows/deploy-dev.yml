@@ -59,6 +59,24 @@ jobs:
           ssh ${{ secrets.DEV_SSH_USER }}@${{ secrets.DEV_SSH_HOST }} 'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${{ secrets.DEV_SSH_HOST }}/" > kubeconfig.yaml
           chmod 600 kubeconfig.yaml
 
+      - name: Handle potential Helm lock
+        run: |
+          # Use set +e to prevent the script from exiting if helm status fails (e.g., on first run)
+          set +e
+          STATUS_OUTPUT=$(helm status kafka-dev --namespace development --kubeconfig ./kubeconfig.yaml)
+          EXIT_CODE=$?
+          set -e
+
+          # Check if the release exists and is in a pending state
+          if [ $EXIT_CODE -eq 0 ] && (echo "$STATUS_OUTPUT" | grep -q "STATUS: pending-"); then
+            echo "Helm release 'kafka-dev' is in a pending state. Rolling back to release 0 to unlock."
+            helm rollback kafka-dev 0 --namespace development --kubeconfig ./kubeconfig.yaml
+            echo "Waiting for rollback to complete..."
+            sleep 15
+          else
+            echo "Helm release 'kafka-dev' is in a stable state or does not exist. Proceeding."
+          fi
+
       - name: Deploy Kafka with Helm
         run: |
           helm upgrade --install kafka-dev ./helm/kafka \
