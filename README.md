@@ -98,5 +98,3 @@ helm dependency update ./helm/kafka
 - **개발 환경 (Development)**:
   - `NodePort`를 통해 외부에 노출됩니다.
   - 접속 주소: `http://<Node_IP>:30000`
-
-```
